@@ -75,9 +75,10 @@ export default function CropRecForm() {
   console.log("Form Data:", formData);
 
   try {
-    const rec = await getCropRecommendation(formData);
+    const cropRecommender = getCropRecommendation();
+    const rec = await cropRecommender.fetchRecommendation(formData);
 
-    console.log("rec:: ", rec)
+    console.log("rec:: ", rec);
 
     if (rec) {
       setRecommendation(rec);

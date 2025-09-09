@@ -13,28 +13,32 @@ type CropRecommendationRequest = {
 };
 
 
-async function getCropRecommendation(
-   inputs: CropRecommendationRequest
-): Promise<string | null> {
-  try {
-    const response = await fetch("https://sih-crop-recommendation-2025-microservice.onrender.com/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputs),
-    });
+function getCropRecommendation() {
+  async function fetchRecommendation(inputs: CropRecommendationRequest): Promise<string | null> {
+    try {
+      const response = await fetch("https://sih-crop-recommendation-2025-microservice.onrender.com/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: CropRecommendationResponse = await response.json();
+      return data.recommendation;
+    } catch (error) {
+      console.error("Error fetching recommendation:", error);
+      return null;
     }
-
-    const data: CropRecommendationResponse = await response.json();
-    return data.recommendation;
-  } catch (error) {
-    console.error("Error fetching recommendation:", error);
-    return null;
   }
+
+  return {
+    fetchRecommendation
+  };
 }
 
 export default getCropRecommendation;
