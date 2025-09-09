@@ -1,5 +1,6 @@
+import { AppText } from '@/components/AppText';
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Dimensions, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { getWeather, WeatherResponse } from '../api/weather';
 
 export default function WeatherScreen() {
@@ -36,7 +37,9 @@ export default function WeatherScreen() {
 
       <View>
         {/* Hourly Forecast */}
-      <Text style={styles.sectionTitle}>Hourly Forecast</Text>
+      <AppText weight="bold" sizeClassName="text-xl" colorClassName="text-white" className="px-3 py-3">
+        Hourly Forecast
+      </AppText>
       <FlatList
         data={todayHours}
         horizontal
@@ -45,9 +48,15 @@ export default function WeatherScreen() {
         contentContainerStyle={{ paddingHorizontal: 10 }}
         renderItem={({ item }) => (
           <View style={styles.hourCard}>
-            <Text style={styles.hourTime}>{item.time.split("T")[1].slice(0, 5)}</Text>
-            <Text style={styles.hourTemp}>{item.temperature}°C</Text>
-            <Text style={styles.hourRain}>🌧 {item.precipitation} mm</Text>
+            <AppText weight="bold" colorClassName="text-white" sizeClassName="text-sm" className="mb-1">
+              {item.time.split("T")[1].slice(0, 5)}
+            </AppText>
+            <AppText weight="bold" colorClassName="text-white" sizeClassName="text-lg">
+              {item.temperature}°C
+            </AppText>
+            <AppText colorClassName="text-white" sizeClassName="text-xs" className="mt-1 text-center">
+              🌧 {item.precipitation} mm
+            </AppText>
           </View>
         )}
       />
@@ -55,18 +64,28 @@ export default function WeatherScreen() {
 
       <View>
         {/* 7-Day Forecast */}
-      <Text style={styles.sectionTitle}>7-Day Forecast</Text>
+      <AppText weight="bold" sizeClassName="text-xl" colorClassName="text-white" className="px-3 py-3">
+        7-Day Forecast
+      </AppText>
       <FlatList
         data={weather.daily.time}
         keyExtractor={(item) => item}
         renderItem={({ item, index }) => (
           <View style={styles.dayCard}>
-            <Text style={styles.dayDate}>{item}</Text>
+            <AppText weight="bold" colorClassName="text-white" sizeClassName="text-base" className="mb-2">
+              {item}
+            </AppText>
             <View>
-              <Text style={styles.dayMax}>Max: {weather.daily.temperature_2m_max[index]}°C</Text>
-              <Text style={styles.dayMin}>Min: {weather.daily.temperature_2m_min[index]}°C</Text>
+              <AppText weight="bold" colorClassName="text-red-300" sizeClassName="text-base">
+                Max: {weather.daily.temperature_2m_max[index]}°C
+              </AppText>
+              <AppText weight="bold" colorClassName="text-blue-300" sizeClassName="text-base">
+                Min: {weather.daily.temperature_2m_min[index]}°C
+              </AppText>
             </View>
-            <Text style={styles.dayRain}>🌧 Precipitation: {weather.daily.precipitation_probability_max[index]}%</Text>
+            <AppText colorClassName="text-white" sizeClassName="text-sm" className="mt-1">
+              🌧 Precipitation: {weather.daily.precipitation_probability_max[index]}%
+            </AppText>
           </View>
         )}
       />
@@ -77,22 +96,15 @@ export default function WeatherScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingVertical: 15 },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginVertical: 12,
-    color: "#fff",
-    paddingHorizontal: 10,
-  },
   // Hourly forecast
 hourCard: {
-  minWidth: 140, // wider than before
+  minWidth: 140,
   minHeight: 100,
   paddingVertical: 16,
   paddingHorizontal: 12,
   marginRight: 12,
   borderRadius: 16,
-  backgroundColor: "rgba(255,255,255,0.3)", // slightly brighter for visibility
+  backgroundColor: "rgba(255,255,255,0.3)",
   alignItems: "center",
   justifyContent: "space-around",
   shadowColor: "#000",
@@ -101,10 +113,6 @@ hourCard: {
   shadowRadius: 6,
   elevation: 3,
 },
-hourTime: { fontWeight: "600", color: "#fff", marginBottom: 6, fontSize: 14 },
-hourTemp: { fontSize: 18, fontWeight: "700", color: "#fff" },
-hourRain: { fontSize: 13, color: "#fff", marginTop: 6, textAlign: "center" },
-
 
   // Daily forecast
   dayCard: {
@@ -119,8 +127,4 @@ hourRain: { fontSize: 13, color: "#fff", marginTop: 6, textAlign: "center" },
     shadowRadius: 6,
     elevation: 2,
   },
-  dayDate: { fontSize: 16, fontWeight: "600", color: "#fff", marginBottom: 8 },
-  dayMax: { fontSize: 16, fontWeight: "700", color: "#FF6B6B" },
-  dayMin: { fontSize: 16, fontWeight: "700", color: "#4DA6FF" },
-  dayRain: { fontSize: 14, color: "#fff", marginTop: 6 },
 });

@@ -9,16 +9,19 @@
 // }
 
 // app/tabs/dashboard.tsx
-import React from "react";
-import { View, ScrollView, StyleSheet, Text } from "react-native";
-import WeatherCard from "@/components/WeatherCard";
+import { AppText } from "@/components/AppText";
 import MarketCard from "@/components/MarketCard";
 import PhotoUploader from "@/components/PhotoUploader";
+import WeatherCard from "@/components/WeatherCard";
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
 
 export default function Dashboard() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Dashboard</Text>
+      <AppText weight="bold" sizeClassName="text-2xl" colorClassName="text-foreground">
+        Dashboard
+      </AppText>
 
       {/* Weather Section */}
       <WeatherCard />
@@ -34,11 +37,7 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#FFFFFF",
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
+  // spacing for sections can be added here
 });

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { AppButton } from "@/components/AppButton";
+import { AppText } from "@/components/AppText";
 import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
 import { useAuth } from "../context/Authcontext";
 
 export default function LoginScreen() {
@@ -21,7 +23,13 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <AppText 
+        weight="bold" 
+        sizeClassName="text-3xl" 
+        style={{ color: '#0F172A', textAlign: 'center', marginBottom: 32 }}
+      >
+        Login
+      </AppText>
 
       <TextInput
         placeholder="Mobile"
@@ -39,22 +47,37 @@ export default function LoginScreen() {
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <AppButton title="Login" onPress={handleLogin} />
+      </View>
 
-      <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
-        <Text style={styles.link}>Don’t have an account? Register</Text>
-      </TouchableOpacity>
+      <AppText 
+        onPress={() => router.push("/(auth)/register")}
+        style={{ color: '#2E7D32', textAlign: 'center', marginTop: 16 }}
+      >
+        Don&apos;t have an account? Register
+      </AppText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 15 },
-  button: { backgroundColor: "#2e7d32", padding: 15, borderRadius: 8, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  link: { marginTop: 15, textAlign: "center", color: "#007AFF" },
+  container: { 
+    flex: 1, 
+    justifyContent: "center", 
+    padding: 20, 
+    backgroundColor: "#FFFFFF" 
+  },
+  input: { 
+    borderWidth: 1, 
+    borderColor: "#E5E7EB", 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 16,
+    fontSize: 16,
+    fontFamily: "SpaceMono"
+  },
+  buttonContainer: {
+    marginBottom: 16,
+  },
 });

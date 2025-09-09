@@ -1,15 +1,12 @@
-import getCropRecommendation from "@/app/api/cropRec"; 
-import { Picker } from "@react-native-picker/picker";
+import getCropRecommendation from "@/app/api/cropRec";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+  TextInput
 } from "react-native";
+import { AppButton } from "./AppButton";
+import { AppText } from "./AppText";
 
 export default function CropRecForm() {
   const [nitrogen, setNitrogen] = useState<string>("");
@@ -97,9 +94,13 @@ export default function CropRecForm() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Soil & Crop Details</Text>
+      <AppText weight="bold" sizeClassName="text-xl" colorClassName="text-primary" className="text-center mb-5">
+        Soil & Crop Details
+      </AppText>
 
-      <Text style={styles.label}>🌱 Nitrogen (N)</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        🌱 Nitrogen (N)
+      </AppText>
       <TextInput
         style={[styles.input, errors.nitrogen && styles.inputError]}
         keyboardType="numeric"
@@ -107,9 +108,11 @@ export default function CropRecForm() {
         onChangeText={setNitrogen}
         placeholder="Enter Nitrogen value"
       />
-      {errors.nitrogen && <Text style={styles.error}>{errors.nitrogen}</Text>}
+      {errors.nitrogen && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.nitrogen}</AppText>}
 
-      <Text style={styles.label}>🌱 Phosphorus (P)</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        🌱 Phosphorus (P)
+      </AppText>
       <TextInput
         style={[styles.input, errors.phosphorus && styles.inputError]}
         keyboardType="numeric"
@@ -117,9 +120,11 @@ export default function CropRecForm() {
         onChangeText={setPhosphorus}
         placeholder="Enter Phosphorus value"
       />
-      {errors.phosphorus && <Text style={styles.error}>{errors.phosphorus}</Text>}
+      {errors.phosphorus && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.phosphorus}</AppText>}
 
-      <Text style={styles.label}>🌱 Potassium (K)</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        🌱 Potassium (K)
+      </AppText>
       <TextInput
         style={[styles.input, errors.potassium && styles.inputError]}
         keyboardType="numeric"
@@ -127,9 +132,11 @@ export default function CropRecForm() {
         onChangeText={setPotassium}
         placeholder="Enter Potassium value"
       />
-      {errors.potassium && <Text style={styles.error}>{errors.potassium}</Text>}
+      {errors.potassium && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.potassium}</AppText>}
 
-      <Text style={styles.label}>🧪 Soil pH</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        🧪 Soil pH
+      </AppText>
       <TextInput
         style={[styles.input, errors.ph && styles.inputError]}
         keyboardType="decimal-pad"
@@ -137,53 +144,56 @@ export default function CropRecForm() {
         onChangeText={setPh}
         placeholder="Enter soil pH"
       />
-      {errors.ph && <Text style={styles.error}>{errors.ph}</Text>}
+      {errors.ph && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.ph}</AppText>}
 
-      <Text style={styles.label}>Rainfall</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        Rainfall
+      </AppText>
       <TextInput
-        style={[styles.input, errors.ph && styles.inputError]}
+        style={[styles.input, errors.rainfall && styles.inputError]}
         keyboardType="decimal-pad"
         value={rainfall}
         onChangeText={setRainfall}
         placeholder="Enter rainfall"
       />
-      {errors.rainfall && <Text style={styles.error}>{errors.rainfall}</Text>}
+      {errors.rainfall && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.rainfall}</AppText>}
 
-      <Text style={styles.label}>Temperature</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        Temperature
+      </AppText>
       <TextInput
-        style={[styles.input, errors.ph && styles.inputError]}
+        style={[styles.input, errors.temperature && styles.inputError]}
         keyboardType="decimal-pad"
         value={temperature}
         onChangeText={setTemperature}
         placeholder="Enter temperature"
       />
-      {errors.temperature && <Text style={styles.error}>{errors.temperature}</Text>}
+      {errors.temperature && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.temperature}</AppText>}
 
-      <Text style={styles.label}>Humidity</Text>
+      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
+        Humidity
+      </AppText>
       <TextInput
-        style={[styles.input, errors.ph && styles.inputError]}
+        style={[styles.input, errors.humidity && styles.inputError]}
         keyboardType="decimal-pad"
         value={humidity}
         onChangeText={setHumidity}
         placeholder="Enter humidity"
       />
-      {errors.humidity && <Text style={styles.error}>{errors.humidity}</Text>}
+      {errors.humidity && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.humidity}</AppText>}
 
-      <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>
-              {loading ? "Submitting..." : "Submit Details"}
-            </Text>
-      </TouchableOpacity>
+      <AppButton
+        title={loading ? "Submitting..." : "Submit Details"}
+        onPress={handleSubmit}
+        disabled={loading}
+        className="mt-4"
+      />
 
-      {cropRecError && <Text style={{ color: "red", marginTop: 10 }}>{cropRecError}</Text>}
+      {cropRecError && <AppText colorClassName="text-red-600" className="mt-3">{cropRecError}</AppText>}
       {recommendation && (
-        <Text style={{ marginTop: 15, fontWeight: "bold", fontSize: 16 }}>
+        <AppText weight="bold" colorClassName="text-primary" sizeClassName="text-lg" className="mt-4">
           🌾 Recommended Crop: {recommendation}
-        </Text>
+        </AppText>
       )}
 
     </ScrollView>
@@ -194,50 +204,19 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: "#f6fff6",
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#2e7d32",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 6,
-    color: "#333",
+    backgroundColor: "#FFFFFF",
   },
   input: {
     borderWidth: 1,
-    borderColor: "#bbb",
-    borderRadius: 10,
-    padding: 12,
+    borderColor: "#E5E7EB",
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 8,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     fontSize: 16,
+    fontFamily: "SpaceMono",
   },
   inputError: {
-    borderColor: "#dc2626", // red border
-  },
-  error: {
-    color: "#dc2626",
-    fontSize: 13,
-    marginBottom: 12,
-  },
-  button: {
-  backgroundColor: "#2e7d32",   // nice green
-  paddingVertical: 14,
-  paddingHorizontal: 20,
-  borderRadius: 10,
-  alignItems: "center",
-  justifyContent: "center",
-  marginTop: 15,
-},
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
+    borderColor: "#DC2626",
   },
 });
