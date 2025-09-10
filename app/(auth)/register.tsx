@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { useRouter } from "expo-router";
-import { useAuth } from "../context/Authcontext";
+import { AppButton } from "@/components/AppButton";
+import { AppText } from "@/components/AppText";
 import { Picker } from "@react-native-picker/picker";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { useAuth } from "../context/Authcontext";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
@@ -25,7 +27,9 @@ export default function RegisterScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <AppText weight="bold" sizeClassName="text-3xl" colorClassName="text-foreground" className="text-center mb-8">
+        Register
+      </AppText>
 
        <TextInput
         style={styles.input}
@@ -69,22 +73,33 @@ export default function RegisterScreen() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
+      <AppButton title="Register" onPress={handleRegister} className="mb-4" />
 
-      <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-        <Text style={styles.link}>Already have an account? Login</Text>
-      </TouchableOpacity>
+      <AppText 
+        onPress={() => router.push("/(auth)/login")}
+        colorClassName="text-primary" 
+        className="text-center mt-4"
+      >
+        Already have an account? Login
+      </AppText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12, marginBottom: 15 },
-  button: { backgroundColor: "#1565c0", padding: 15, borderRadius: 8, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  link: { marginTop: 15, textAlign: "center", color: "#007AFF" },
+  container: { 
+    flex: 1, 
+    justifyContent: "center", 
+    padding: 20, 
+    backgroundColor: "#FFFFFF" 
+  },
+  input: { 
+    borderWidth: 1, 
+    borderColor: "#E5E7EB", 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 16,
+    fontSize: 16,
+    fontFamily: "SpaceMono"
+  },
 });

@@ -60,9 +60,10 @@
 // export default WeatherCard;
 
 
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import React from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useWeather } from '../app/hooks/useWeather';
+import { AppText } from './AppText';
 
 
 const WeatherCard = () => {
@@ -73,7 +74,7 @@ const WeatherCard = () => {
         return (
             <View style={styles.card}>
             <ActivityIndicator size="small" color="#000" />
-            <Text>Loading weather...</Text>
+            <AppText>Loading weather...</AppText>
             </View>
         );
     }
@@ -81,7 +82,7 @@ const WeatherCard = () => {
     if (error || !weather) {
         return (
             <View style={styles.card}>
-            <Text>Error loading weather: {error || 'Unknown error'}</Text>
+            <AppText colorClassName="text-red-600">Error loading weather: {error || 'Unknown error'}</AppText>
             </View>
         );
     }
@@ -99,41 +100,94 @@ const WeatherCard = () => {
 
   return (
     <View style={[styles.card, { backgroundColor }]}>
-      <Text style={[styles.title, { color: textColor }]}>Today's Weather</Text>
+      <AppText 
+        weight="bold" 
+        sizeClassName="text-xl" 
+        style={{ color: textColor, textAlign: 'center', marginBottom: 16 }}
+      >
+        Today&apos;s Weather
+      </AppText>
 
       <View style={styles.tempRow}>
         <View style={styles.tempBox}>
-          <Text style={[styles.tempLabel, { color: textColor }]}>Max</Text>
-          <Text style={[styles.tempValue, { color: textColor }]}>
+          <AppText 
+            sizeClassName="text-sm" 
+            style={{ color: textColor, marginBottom: 4 }}
+          >
+            Max
+          </AppText>
+          <AppText 
+            weight="bold" 
+            sizeClassName="text-lg"
+            style={{ color: textColor }}
+          >
             {todayDaily.temperature_2m_max[todayIndex]}°C
-          </Text>
+          </AppText>
         </View>
         <View style={styles.tempBox}>
-          <Text style={[styles.tempLabel, { color: textColor }]}>Min</Text>
-          <Text style={[styles.tempValue, { color: textColor }]}>
+          <AppText 
+            sizeClassName="text-sm" 
+            style={{ color: textColor, marginBottom: 4 }}
+          >
+            Min
+          </AppText>
+          <AppText 
+            weight="bold" 
+            sizeClassName="text-lg"
+            style={{ color: textColor }}
+          >
             {todayDaily.temperature_2m_min[todayIndex]}°C
-          </Text>
+          </AppText>
         </View>
         <View style={styles.tempBox}>
-          <Text style={[styles.tempLabel, { color: textColor }]}>Mean</Text>
-          <Text style={[styles.tempValue, { color: textColor }]}>
+          <AppText 
+            sizeClassName="text-sm" 
+            style={{ color: textColor, marginBottom: 4 }}
+          >
+            Mean
+          </AppText>
+          <AppText 
+            weight="bold" 
+            sizeClassName="text-lg"
+            style={{ color: textColor }}
+          >
             {todayDaily.temperature_2m_mean[todayIndex]}°C
-          </Text>
+          </AppText>
         </View>
       </View>
 
       <View style={styles.statRow}>
-        <Text style={[styles.label, { color: textColor }]}>🌬 Wind Speed</Text>
-        <Text style={[styles.value, { color: textColor }]}>
+        <AppText 
+          weight="bold" 
+          sizeClassName="text-base"
+          style={{ color: textColor }}
+        >
+          🌬 Wind Speed
+        </AppText>
+        <AppText 
+          weight="bold" 
+          sizeClassName="text-base"
+          style={{ color: textColor }}
+        >
           {todayDaily.wind_speed_10m_mean[todayIndex]} km/h
-        </Text>
+        </AppText>
       </View>
 
       <View style={styles.statRow}>
-        <Text style={[styles.label, { color: textColor }]}>☔ Precipitation</Text>
-        <Text style={[styles.value, { color: textColor }]}>
+        <AppText 
+          weight="bold" 
+          sizeClassName="text-base"
+          style={{ color: textColor }}
+        >
+          ☔ Precipitation
+        </AppText>
+        <AppText 
+          weight="bold" 
+          sizeClassName="text-base"
+          style={{ color: textColor }}
+        >
           {todayDaily.precipitation_probability_max[todayIndex]}%
-        </Text>
+        </AppText>
       </View>
     </View>
   );
@@ -150,12 +204,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     elevation: 5,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 16,
-    textAlign: "center",
-  },
   tempRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -169,14 +217,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "rgba(255,255,255,0.2)",
   },
-  tempLabel: {
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  tempValue: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
   statRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -185,14 +225,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
     backgroundColor: "rgba(255,255,255,0.1)",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: "700",
   },
 });
 
