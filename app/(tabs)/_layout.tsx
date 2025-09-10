@@ -7,6 +7,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="weather" options={{ title: "Weather" }} />
       <Tabs.Screen name="pestDetection" options={{ title: "Pest" }} />
       <Tabs.Screen name="cropRecommendation" options={{ title: "Crop Recommendation" }} />
+      <Tabs.Screen name="soilAnalysis" options={{ title: "Soil Analysis" }} />
       <Tabs.Screen name="logout" options={{ title: "Logout" }} />
     </Tabs>
   );
