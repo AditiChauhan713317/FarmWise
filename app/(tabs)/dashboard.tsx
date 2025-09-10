@@ -13,7 +13,7 @@ import React from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import WeatherCard from "@/components/WeatherCard";
 import MarketCard from "@/components/MarketCard";
-import PhotoUploader from "@/components/PhotoUploader";
+// import PhotoUploader from "@/components/PhotoUploader";
 
 export default function Dashboard() {
   return (
@@ -25,7 +25,7 @@ export default function Dashboard() {
     
        <MarketCard />
 
-       <PhotoUploader />
+       {/* <PhotoUploader /> */}
       {/* Other dashboard components can go here */}
     </ScrollView>
   );
