@@ -55,6 +55,6 @@ export const useMarket = (commodity: string = "Wheat") => {
     fetch();
   }, [commodity]);
 
-//   console.log("inside useMarket:: ", market);
+  // console.log("inside useMarket:: ", market);
   return { market, loading, error };
 };
