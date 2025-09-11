@@ -55,11 +55,14 @@ export async function getMarketData(
   commodity: string,
   limit: number = 10
 ): Promise<MarketResponse> {
-  const url =
-    `${BASE_URL}?api-key=${API_KEY}&format=json&limit=${limit}` +
-    `&filters[state.keyword]=${encodeURIComponent(state)}` +
-    `&filters[district]=${encodeURIComponent(district)}` +
-    `&filters[commodity]=${encodeURIComponent(commodity)}`;
+  let url = `${BASE_URL}?api-key=${API_KEY}&format=json&limit=${limit}`;
+  if (state && state.trim().length > 0) {
+    url += `&filters[state.keyword]=${encodeURIComponent(state)}`;
+  }
+  url += `&filters[commodity]=${encodeURIComponent(commodity)}`;
+  if (district && district.trim().length > 0) {
+    url += `&filters[district]=${encodeURIComponent(district)}`;
+  }
 
     // console.log("state: ", state);r
     // console.log("district: ", district);
