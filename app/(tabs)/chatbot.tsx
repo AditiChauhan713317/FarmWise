@@ -1,7 +1,9 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { Audio } from "expo-av";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Animated,
   Dimensions,
@@ -251,7 +253,7 @@ export default function ChatbotScreen() {
                  style={styles.playButton}
                  onPress={stopPlayback}
                >
-                 <AppText style={styles.playButtonText}>⏹️</AppText>
+                 <Ionicons name="stop" size={18} color="#1f2937" />
                </TouchableOpacity>
              ) : (
                <TouchableOpacity
@@ -259,7 +261,11 @@ export default function ChatbotScreen() {
                  onPress={() => playResponse(message.text, message.language)}
                  disabled={isTTSLoading}
                >
-                 <AppText style={styles.playButtonText}>{isTTSLoading ? "⏳" : "🔊"}</AppText>
+                 {isTTSLoading ? (
+                   <ActivityIndicator size="small" color="#1f2937" />
+                 ) : (
+                   <Ionicons name="volume-high" size={18} color="#1f2937" />
+                 )}
                </TouchableOpacity>
              )
            )}
@@ -289,7 +295,7 @@ export default function ChatbotScreen() {
               {SUPPORTED_LANGUAGES.map((lang) => (
                 <Picker.Item
                   key={lang.code}
-                  label={`${lang.flag} ${lang.name}`}
+                  label={`${lang.name}`}
                   value={lang.code}
                 />
               ))}
@@ -337,16 +343,18 @@ export default function ChatbotScreen() {
                style={[styles.voiceButton, isRecording && styles.voiceButtonRecording]}
                onPress={isRecording ? stopRecording : startRecording}
              >
-               <AppText style={styles.voiceButtonText}>
-                 {isRecording ? "⏹️" : "🎤"}
-               </AppText>
+               {isRecording ? (
+                 <Ionicons name="stop-circle" size={22} color="#0f3d00" />
+               ) : (
+                 <Ionicons name="mic" size={22} color="#0f3d00" />
+               )}
              </TouchableOpacity>
             <TouchableOpacity
               style={[styles.sendButton, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
               onPress={handleSendMessage}
               disabled={!inputText.trim() || isLoading}
             >
-              <AppText style={styles.sendButtonText}>📤</AppText>
+              <Ionicons name="send" size={18} color="#0f3d00" />
             </TouchableOpacity>
           </View>
         </View>
