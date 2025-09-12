@@ -82,3 +82,5 @@ export async function getWeather(lat: number, lon: number): Promise<WeatherRespo
   if (!res.ok) throw new Error(res.statusText);
   return res.json() as Promise<WeatherResponse>;
 }
+
+

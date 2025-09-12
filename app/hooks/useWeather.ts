@@ -32,3 +32,4 @@ export const useWeather = () => {
 
   return { weather, loading, error };
 };
+
