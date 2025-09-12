@@ -10,7 +10,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="soilAnalysis" options={{ title: "Soil Analysis" }} />
       <Tabs.Screen name="chatbot" options={{ title: "Chatbot" }} /> 
       <Tabs.Screen name="market" options={{ title: "Market" }} />
-     <Tabs.Screen name="fertilizeranalysis" options={{ title: "FertilizerAnalysis" }} />
+      <Tabs.Screen name="fertilizerAnalysis" options={{ title: "Fertilizer Analysis" }} />
     </Tabs>
   );
 }
