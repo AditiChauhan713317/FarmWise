@@ -283,7 +283,7 @@ const shortcuts = [
   {
     label: "Check Market Prices",
     icon: require("../../assets/check_market_prices_icon.png"),
-    onPress: undefined,
+    onPress: (router: any) => router.push("/(tabs)/market"),
   },
   {
     label: "Get Fertilizer Tips",
@@ -298,6 +298,6 @@ const shortcuts = [
   {
     label: "AI Farming Advice",
     icon: require("../../assets/ai_farming_advice_icon.png"),
-    onPress: undefined,
+    onPress: (router: any) => router.push("/(tabs)/chatbot"),
   },
 ] as const;
