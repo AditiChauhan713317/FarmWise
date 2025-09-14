@@ -5,21 +5,113 @@ import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface SoilAnalysisRequest {
+// interface SoilAnalysisRequest {
+//   soilType: string;
+//   ph: string;
+//   nutrients: string;
+//   moisture: string;
+//   location: string;
+//   cropHistory: string;
+// }
+
+// interface SoilAnalysisResponse {
+//   analysis: string;
+//   recommendations: string[];
+//   improvements: string[];
+//   nextSteps: string[];
+// }
+
+
+// // -------------------- TYPES --------------------
+// interface NutrientLevels {
+//   nitrogen: string;
+//   phosphorus: string;
+//   potassium: string;
+// }
+
+// interface SoilAnalysis {
+//   cropHistory: string[];
+//   location: string;
+//   moistureContent: string;
+//   nutrientLevels: NutrientLevels;
+//   pHLevel: number;
+//   soilType: string;
+// }
+
+// interface RecommendationItem {
+//   description: string;
+//   suitableCrops?: string[];
+//   recommendations?: string[];
+//   applicationRate?: string;
+// }
+
+// interface SoilAnalysisResponse {
+//   analysis: SoilAnalysis;
+//   recommendations: Record<string, RecommendationItem>;
+//   improvements: Record<string, string>;
+//   nextSteps: string[];
+// }
+
+// interface SoilAnalysisRequest {
+//   soilType: string;
+//   ph: string;
+//   nutrients: string;
+//   moisture: string;
+//   location: string;
+//   cropHistory: string;
+// }
+
+
+interface SoilAnalysis {
   soilType: string;
-  ph: string;
-  nutrients: string;
-  moisture: string;
+  pHLevel: number;
+  moistureContent: string;
   location: string;
-  cropHistory: string;
+  cropHistory: string[] | string;
+  nutrientLevels: {
+    Nitrogen?: string;
+    Phosphorus?: string;
+    Potassium?: string;
+  };
 }
 
-interface SoilAnalysisResponse {
-  analysis: string;
-  recommendations: string[];
-  improvements: string[];
-  nextSteps: string[];
+interface ImprovementItem {
+  action: string;
+  details: string;
 }
+
+// interface NextStep {
+//   step: string;
+//   details: string;
+// }
+
+interface RecommendationItem {
+  description?: string;          // for simple description-only recs
+  suitableCrops?: string[];      // e.g., ["Legumes", "Millets"]
+  recommendations?: string[];    // nested recs array
+  action?: string;               // e.g., "Lime Application"
+  details?: string;              // explanation for action
+  applicationRate?: string;      // e.g., "5–10 tons per hectare"
+}
+
+
+interface SoilAnalysisResponse {
+  analysis: SoilAnalysis;
+  improvements: { [key: string]: ImprovementItem };
+  nextSteps: string[];
+  recommendations: { [key: string]: RecommendationItem };
+}
+
+
+export interface SoilAnalysisRequest {
+  soilType: string;              // e.g. "Clay", "Sandy", "Loam"
+  ph: string;               // e.g. 5.5
+  moisture: string;       // e.g. "Dry", "Moist", "Wet"
+  location: string;              // e.g. "Noida Uttar Pradesh"
+  cropHistory: string;         // e.g. ["Wheat", "Rice"]
+  nutrients: string;
+}
+
 
 export default function SoilAnalysis() {
   const [soilType, setSoilType] = useState<string>("");
@@ -103,15 +195,48 @@ export default function SoilAnalysis() {
       const content = data.choices[0].message.content;
       
       try {
-        const parsedAnalysis = JSON.parse(content);
+        const cleaned = content.replace(/```json|```/g, "").trim();
+        const parsedAnalysis = JSON.parse(cleaned);
+        console.log("parsed analysis:: ",parsedAnalysis)
         setAnalysis(parsedAnalysis);
       } catch (parseError) {
+        console.log("parsed error:: ", parseError)
+        // console.log("here::::::", content)
+        // setAnalysis({
+        //   analysis: content,
+        //   recommendations: ["Please consult with a local agricultural expert for detailed recommendations."],
+        //   improvements: ["Regular soil testing is recommended."],
+        //   nextSteps: ["Schedule a follow-up soil test in 3-6 months."]
+        // });
         setAnalysis({
-          analysis: content,
-          recommendations: ["Please consult with a local agricultural expert for detailed recommendations."],
-          improvements: ["Regular soil testing is recommended."],
-          nextSteps: ["Schedule a follow-up soil test in 3-6 months."]
-        });
+  analysis: {
+    soilType: "Unknown",
+    pHLevel: 0,
+    moistureContent: "Unknown",
+    location: "Unknown",
+    cropHistory: [],
+    nutrientLevels: {
+      Nitrogen: "Unknown",
+      Phosphorus: "Unknown",
+      Potassium: "Unknown",
+    },
+  },
+  recommendations: {
+    general: {
+      description: "Please consult with a local agricultural expert for detailed recommendations.",
+    },
+  },
+  improvements: {
+    general: {
+      action: "Regular soil testing",
+      details: "Conduct soil tests every 3–6 months to monitor and improve fertility.",
+    },
+  },
+  nextSteps: ["Schedule follow-up soil test",
+      "Reassess soil health in 3–6 months and adjust practices accordingly.",
+  ],
+});
+
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
@@ -233,7 +358,7 @@ export default function SoilAnalysis() {
               </View>
             )}
 
-            {analysis && (
+           {/* {analysis && (
               <View style={styles.resultContainer}>
                 <View style={styles.analysisCard}>
                   <AppText weight="bold" colorClassName="text-green-800" sizeClassName="text-lg" className="mb-3">
@@ -269,7 +394,176 @@ export default function SoilAnalysis() {
                   ))}
                 </View>
               </View>
-            )}
+            )} 
+
+   */}
+          
+          {/* --- RESULTS --- */}
+        {analysis && (
+          <>
+            <View style={styles.card}>
+        <Text style={styles.title}>📊 Soil Analysis</Text>
+        <Text>Soil Type: {analysis.analysis.soilType}</Text>
+        <Text>pH Level: {analysis.analysis.pHLevel}</Text>
+        <Text>Moisture: {analysis.analysis.moistureContent}</Text>
+        <Text>Location: {analysis.analysis.location}</Text>
+        <Text>
+          Crop History:{" "}
+          {Array.isArray(analysis.analysis.cropHistory)
+            ? analysis.analysis.cropHistory.join(", ")
+            : analysis.analysis.cropHistory || "N/A"}
+        </Text>
+
+        <Text style={styles.subTitle}>Nutrient Levels:</Text>
+        <Text>• Nitrogen: {analysis.analysis.nutrientLevels.Nitrogen}</Text>
+        <Text>• Phosphorus: {analysis.analysis.nutrientLevels.Phosphorus}</Text>
+        <Text>• Potassium: {analysis.analysis.nutrientLevels.Potassium}</Text>
+      </View>
+
+      {/* Recommendations */}
+      <View style={styles.card}>
+        <Text style={styles.title}>💡 Recommendations</Text>
+        {/* {Object.entries(analysis.recommendations).map(([key, rec]) => (
+          <View key={key} style={{ marginBottom: 10 }}>
+            <Text style={styles.subTitle}>{key}</Text>
+            {rec.action && <Text>Action: {rec.action}</Text>}
+            {rec.details &&
+              (typeof rec.details === "string" ? (
+                <Text>Details: {rec.details}</Text>
+              ) : (
+                Object.entries(rec.details).map(([k, v]) => (
+                  <Text key={k}>
+                    {k}: {v}
+                  </Text>
+                ))
+              ))}
+            {rec.recommendations &&
+              rec.recommendations.map((r, i) => (
+                <Text key={i}>• {r}</Text>
+              ))}
+          </View>
+        ))} */}
+        {Object.entries(analysis.recommendations).map(([key, value]: [string, any], idx) => (
+      <View key={idx} style={{ marginBottom: 12 }}>
+        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{key}</Text>
+        
+        {/* Every recommendation has a "recommendation" field */}
+        {value.recommendation && (
+          <Text style={{ marginTop: 4 }}>{value.recommendation}</Text>
+        )}
+
+        {/* Optional fields */}
+        {value.suitableCrops && (
+          <Text style={{ marginTop: 4 }}>
+            Suitable Crops: {value.suitableCrops.join(", ")}
+          </Text>
+        )}
+
+        {value.methods && (
+          <Text style={{ marginTop: 4 }}>
+            Methods: {value.methods.join(", ")}
+          </Text>
+        )}
+
+        {value.applicationTiming && (
+          <Text style={{ marginTop: 4 }}>
+            Application Timing: {value.applicationTiming}
+          </Text>
+        )}
+
+        {value.specificFertilizers && (
+          <Text style={{ marginTop: 4 }}>
+            Fertilizers: {JSON.stringify(value.specificFertilizers)}
+          </Text>
+        )}
+
+        {value.method && (
+          <Text style={{ marginTop: 4 }}>
+            Method: {value.method}
+          </Text>
+        )}
+      </View>
+    ))}
+      </View>
+
+      {/* Improvements */}
+      {/* <View style={styles.card}>
+        <Text style={styles.title}>🔧 Improvements</Text>
+        {Object.entries(analysis.improvements).map(([key, imp]) => (
+          <View key={key} style={{ marginBottom: 10 }}>
+            <Text style={styles.subTitle}>{imp.action}</Text>
+            <Text>{imp.details}</Text>
+          </View>
+        ))}
+      </View> */}
+      <View style={{ marginTop: 16 }}>
+    <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>
+      Improvements
+    </Text>
+
+    {Object.entries(analysis.improvements).map(([key, value]: [string, any], idx) => (
+      <View key={idx} style={{ marginBottom: 12 }}>
+        <Text style={{fontSize: 16 }}>{key}</Text>
+
+        {/* Recommendation text */}
+        {value.recommendation && (
+          <Text style={{ marginTop: 4, fontSize: 30 }}>{value.recommendation}</Text>
+        )}
+
+        {/* Suggested cover crops (array) */}
+        {value.suggestedCoverCrops && (
+          <Text style={{ marginTop: 4 }}>
+            Suggested Cover Crops: {value.suggestedCoverCrops.join(", ")}
+          </Text>
+        )}
+
+        {/* Suggested rotation (array) */}
+        {value.suggestedRotation && (
+          <Text style={{ marginTop: 4 }}>
+            Suggested Rotation: {value.suggestedRotation.join(", ")}
+          </Text>
+        )}
+
+        {/* Method text */}
+        {value.method && (
+          <Text style={{ marginTop: 4 }}>
+            Method: {value.method}
+          </Text>
+        )}
+      </View>
+    ))}
+  </View>
+
+      {/* Next Steps */}
+      {/* <View style={styles.card}>
+        <Text style={styles.title}>📋 Next Steps</Text>
+        {analysis.nextSteps.map((step, i) => (
+          <View key={i} style={{ marginBottom: 8 }}>
+            <Text style={styles.subTitle}>{step.step}</Text>
+            <Text>{step.details}</Text>
+          </View>
+        ))}
+      </View> */}
+     <View style={{ marginTop: 16 }}>
+      <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 8 }}>
+        📋 Next Steps
+      </Text>
+
+      {analysis.nextSteps.map((step, index) => (
+        <Text key={index} style={{ marginBottom: 4 }}>
+          • {step}
+        </Text>
+      ))}
+    </View>
+
+          </>
+        )}
+          
+
+          
+
+ 
+
           </View>
         </View>
 
@@ -285,6 +579,8 @@ export default function SoilAnalysis() {
       </ScrollView>
     </SafeAreaView>
   );
+
+
 }
 
 const styles = StyleSheet.create({
@@ -349,4 +645,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#DDD6FE",
   },
+ container: { flex: 1, padding: 16, backgroundColor: "#f9fafb" },
+  card: {
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  title: { fontSize: 18, fontWeight: "bold", marginBottom: 8, color: "#1f2937" },
+  subTitle: { fontSize: 16, fontWeight: "600", marginTop: 6, color: "#374151" },
 });
+
+
+
+
+
+
