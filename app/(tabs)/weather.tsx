@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View, ScrollView } from 'react-native';
 import { getWeather, WeatherResponse } from '../api/weather';
 import { useWeather } from '../hooks/useWeather'
-
+import { useWeatherContext } from '../context/WeatherContext';
 
 const dateFormatter = (day: string) => {
 
@@ -22,7 +22,8 @@ export default function WeatherScreen() {
   // const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [alerts, setAlerts] = useState<string[]>([]);
 
-  const { weather, loading, error } = useWeather(); // top-level call
+  // const { weather, loading, error } = useWeather(); // top-level call
+  const { weather, loading, error } = useWeatherContext();
 
   // console.log("WEATHER::: ", weather)
 
@@ -31,7 +32,21 @@ export default function WeatherScreen() {
 }, [weather]);
 
 
-  if (!weather) return null;
+  if (loading || !weather) {
+    return (
+    <View className='flex justify-center items-center'>
+      <AppText>loading...</AppText>
+    </View>
+  );
+}
+
+  if(error) {
+    return (
+       <View className='flex justify-center items-center'>
+        <AppText>Error:: {error}</AppText>
+    </View>
+    )
+  }
 
   const todayIndex = 0; // first day is today
   const todayDaily = {

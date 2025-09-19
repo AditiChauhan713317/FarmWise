@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { AuthProvider } from "./context/Authcontext";
+import { WeatherProvider } from "./context/WeatherContext";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -28,7 +29,9 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <WeatherProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </WeatherProvider>
     </AuthProvider>
   );
 }
