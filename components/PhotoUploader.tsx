@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Button, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { useCameraPermissions } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { analyzePest, PestAnalysisResponse } from "../app/api/pestDetection";
 
 export default function PhotoUploader() {
@@ -50,8 +50,10 @@ export default function PhotoUploader() {
     <View style={styles.card}>
       <Text style={styles.title}>Pest Detection</Text>
 
-      <TouchableOpacity style={styles.button} onPress={takePhoto}>
-        <Text style={styles.buttonText}>Take Photo of your Crop</Text>
+      <TouchableOpacity style={styles.iconButton} onPress={takePhoto}>
+        <View style={styles.imageIcon}>
+          <View style={styles.imageIconDot} />
+        </View>
       </TouchableOpacity>
 
       {imageUri && (
@@ -95,17 +97,30 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: "#333",
   },
-  button: {
-    backgroundColor: "#2E8B57",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+  iconButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: "#84CC16",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 16,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
+  imageIcon: {
+    width: 26,
+    height: 18,
+    backgroundColor: "#ffffff",
+    borderRadius: 3,
+    position: "relative",
+  },
+  imageIconDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: "#84CC16",
+    position: "absolute",
+    right: 3,
+    top: 3,
   },
   image: {
     width: "100%",
@@ -130,6 +145,6 @@ const styles = StyleSheet.create({
   resultValue: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#2E8B57",
+    color: "#0a0a0a",
   },
 });

@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
-  TextInput
+  TextInput,
+  View
 } from "react-native";
 import { AppButton } from "./AppButton";
 import { AppText } from "./AppText";
@@ -95,96 +96,114 @@ export default function CropRecForm() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <AppText weight="bold" sizeClassName="text-xl" colorClassName="text-primary" className="text-center mb-5">
-        Soil & Crop Details
-      </AppText>
 
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        🌱 Nitrogen (N)
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.nitrogen && styles.inputError]}
-        keyboardType="numeric"
-        value={nitrogen}
-        onChangeText={setNitrogen}
-        placeholder="Enter Nitrogen value"
-      />
-      {errors.nitrogen && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.nitrogen}</AppText>}
+      <View style={styles.gridContainer}>
+        <View style={styles.gridRow}>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🌱 Nitrogen (N)
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.nitrogen && styles.inputError]}
+              keyboardType="numeric"
+              value={nitrogen}
+              onChangeText={setNitrogen}
+              placeholder="N value"
+            />
+            {errors.nitrogen && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.nitrogen}</AppText>}
+          </View>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🌱 Phosphorus (P)
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.phosphorus && styles.inputError]}
+              keyboardType="numeric"
+              value={phosphorus}
+              onChangeText={setPhosphorus}
+              placeholder="P value"
+            />
+            {errors.phosphorus && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.phosphorus}</AppText>}
+          </View>
+        </View>
 
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        🌱 Phosphorus (P)
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.phosphorus && styles.inputError]}
-        keyboardType="numeric"
-        value={phosphorus}
-        onChangeText={setPhosphorus}
-        placeholder="Enter Phosphorus value"
-      />
-      {errors.phosphorus && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.phosphorus}</AppText>}
+        <View style={styles.gridRow}>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🌱 Potassium (K)
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.potassium && styles.inputError]}
+              keyboardType="numeric"
+              value={potassium}
+              onChangeText={setPotassium}
+              placeholder="K value"
+            />
+            {errors.potassium && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.potassium}</AppText>}
+          </View>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🧪 Soil pH
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.ph && styles.inputError]}
+              keyboardType="decimal-pad"
+              value={ph}
+              onChangeText={setPh}
+              placeholder="pH value"
+            />
+            {errors.ph && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.ph}</AppText>}
+          </View>
+        </View>
 
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        🌱 Potassium (K)
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.potassium && styles.inputError]}
-        keyboardType="numeric"
-        value={potassium}
-        onChangeText={setPotassium}
-        placeholder="Enter Potassium value"
-      />
-      {errors.potassium && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.potassium}</AppText>}
+        <View style={styles.gridRow}>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🌧️ Rainfall
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.rainfall && styles.inputError]}
+              keyboardType="decimal-pad"
+              value={rainfall}
+              onChangeText={setRainfall}
+              placeholder="mm"
+            />
+            {errors.rainfall && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.rainfall}</AppText>}
+          </View>
+          <View style={styles.gridItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1">
+              🌡️ Temperature
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.temperature && styles.inputError]}
+              keyboardType="decimal-pad"
+              value={temperature}
+              onChangeText={setTemperature}
+              placeholder="°C"
+            />
+            {errors.temperature && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1">{errors.temperature}</AppText>}
+          </View>
+        </View>
 
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        🧪 Soil pH
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.ph && styles.inputError]}
-        keyboardType="decimal-pad"
-        value={ph}
-        onChangeText={setPh}
-        placeholder="Enter soil pH"
-      />
-      {errors.ph && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.ph}</AppText>}
-
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        Rainfall
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.rainfall && styles.inputError]}
-        keyboardType="decimal-pad"
-        value={rainfall}
-        onChangeText={setRainfall}
-        placeholder="Enter rainfall"
-      />
-      {errors.rainfall && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.rainfall}</AppText>}
-
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        Temperature
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.temperature && styles.inputError]}
-        keyboardType="decimal-pad"
-        value={temperature}
-        onChangeText={setTemperature}
-        placeholder="Enter temperature"
-      />
-      {errors.temperature && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.temperature}</AppText>}
-
-      <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-base" className="mb-2">
-        Humidity
-      </AppText>
-      <TextInput
-        style={[styles.input, errors.humidity && styles.inputError]}
-        keyboardType="decimal-pad"
-        value={humidity}
-        onChangeText={setHumidity}
-        placeholder="Enter humidity"
-      />
-      {errors.humidity && <AppText colorClassName="text-red-600" sizeClassName="text-sm" className="mb-3">{errors.humidity}</AppText>}
+        <View style={styles.gridRowLast}>
+          <View style={styles.centeredItem}>
+            <AppText weight="bold" colorClassName="text-foreground" sizeClassName="text-xs" className="mb-1 text-center">
+              💧 Humidity
+            </AppText>
+            <TextInput
+              style={[styles.input, errors.humidity && styles.inputError, styles.centeredInput]}
+              keyboardType="decimal-pad"
+              value={humidity}
+              onChangeText={setHumidity}
+              placeholder="Humidity %"
+            />
+            {errors.humidity && <AppText colorClassName="text-red-600" sizeClassName="text-xs" className="mt-1 text-center">{errors.humidity}</AppText>}
+          </View>
+        </View>
+      </View>
 
       <AppButton
-        title={loading ? "Submitting..." : "Submit Details"}
+        title={loading ? "Fetching..." : "Get Crop Recommendation"}
         onPress={handleSubmit}
         disabled={loading}
         className="mt-4"
@@ -204,17 +223,39 @@ export default function CropRecForm() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    padding: 16,
     backgroundColor: "#FFFFFF",
+  },
+  gridContainer: {
+    marginBottom: 20,
+  },
+  gridRow: {
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  gridRowLast: {
+    flexDirection: "row",
+    marginBottom: 16,
+    justifyContent: "center",
+  },
+  gridItem: {
+    flex: 1,
+    marginRight: 8,
+  },
+  centeredItem: {
+    alignItems: "center",
+    width: "50%",
+  },
+  centeredInput: {
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
+    borderRadius: 8,
+    padding: 10,
     backgroundColor: "#FFFFFF",
-    fontSize: 16,
+    fontSize: 12,
     fontFamily: "SpaceMono",
   },
   inputError: {

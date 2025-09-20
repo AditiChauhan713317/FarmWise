@@ -31,6 +31,7 @@ export default {
     extra: {
         ocrApiKey: process.env.OCR_API_KEY,
         openRouterApiKey: process.env.OPENROUTER_API_KEY,
+        openaiApiKey: process.env.OPENAI_API_KEY
     }
   }
 };

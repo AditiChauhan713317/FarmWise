@@ -1,15 +1,15 @@
-import { AppButton } from "@/components/AppButton";
 import { AppText } from "@/components/AppText";
+import BackgroundImage from "@/components/BackgroundImage";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, StyleSheet, TextInput, View, Text, TouchableOpacity} from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../context/Authcontext";
-import BackgroundImage from "@/components/BackgroundImage";
 
 export default function RegisterScreen() {
   const { register } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -18,14 +18,30 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
+    if (!name || !mobile || !preferredLanguage || !location || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      await register(name, mobile, preferredLanguage, location, password );
-      router.replace("/(tabs)/dashboard"); // auto-login after register
+      const result = await register(name, mobile, preferredLanguage, location, password);
+      console.log("Registration successful:", result);
+      
+      setTimeout(() => {
+        router.replace("/(tabs)/dashboard");
+      }, 500);
+      
     } catch (err: any) {
-      Alert.alert("Registration Failed", err.message || "Something went wrong");
+      console.error("Registration error:", err);
+      Alert.alert(
+        "Registration Failed", 
+        err.message || "Please check your details and try again"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
 return (
     <View style={styles.container}>
@@ -54,8 +70,6 @@ return (
         keyboardType="phone-pad"
         onChangeText={setMobile}
       />
-
-      
 
       <TextInput
         style={styles.input}
@@ -103,8 +117,16 @@ return (
                 <Picker.Item label="Gujarati" value="gu" />
           </Picker>
       </View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
-               <Text className="text-center text-white font-bold text-xl">Register</Text>
+      <TouchableOpacity 
+        style={[styles.buttonContainer, isLoading && { opacity: 0.7 }]} 
+        onPress={handleRegister}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <Text className="text-center text-white font-bold text-xl">Register</Text>
+        )}
       </TouchableOpacity>
 
       <AppText 
