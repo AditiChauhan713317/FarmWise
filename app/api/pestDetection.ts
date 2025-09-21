@@ -1,6 +1,5 @@
 export interface PestAnalysisResponse {
   prediction: string;
-  confidence: string;
 }
 
 interface PestFile {

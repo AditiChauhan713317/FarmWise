@@ -65,10 +65,6 @@ export default function PhotoUploader() {
           <Text style={styles.resultLabel}>Prediction</Text>
           <Text style={styles.resultValue}>{result.prediction}</Text>
 
-          <Text style={styles.resultLabel}>Confidence</Text>
-          <Text style={styles.resultValue}>
-            {result.confidence }
-          </Text>
         </View>
       )}
     </View>
