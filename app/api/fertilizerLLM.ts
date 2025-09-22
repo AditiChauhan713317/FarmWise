@@ -46,9 +46,12 @@ export const analyzeFertilizer = async (
   context: {
     crop: string;
     stage: string;
-  }
+  },
+  supportedLang: string | undefined
 ): Promise<string> => {
   try {
+
+    // console.log("INSIDE LLM CALL SUPPORTED LANG::: ", supportedLang)
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -60,13 +63,31 @@ export const analyzeFertilizer = async (
         messages: [
           {
             role: "system",
-            content:
-              "You are an agricultural assistant. Analyze fertilizer packaging text and provide clear, practical advice for farmers. Your response must be short, direct, and in this format: YES/NO then give reason then give Dosage/Instructions.",
+            content: `
+              You are a friendly agricultural advisor. Analyze fertilizer packaging text and provide practical advice for farmers. 
+              Explain clearly whether this fertilizer is suitable for the given crop and stage, and provide actionable instructions in a farmer-friendly tone.
+              Your response must be short, clear, and in this JSON format:
+
+              {
+                "useFertilizer": "...",        // Yes/No
+                "reason": "...",               // Simple explanation for the recommendation
+                "dosage": "...",               // How much fertilizer to use
+                "frequency": "...",            // How often to apply
+                "method": "..."                // How to apply (e.g., foliar spray, soil mixing)
+              }
+
+              Respond in ${supportedLang === "hi" ? "Hindi" : "English"}.
+            `
           },
           {
             role: "user",
-            content: `Fertilizer packaging text:\n${ocrText}\n\nFarm context:\nCrop: ${context.crop}\nStage: ${context.stage}\n\nBased on this, should the farmer use this fertilizer?`,
-          },
+            content: `
+              Fertilizer packaging text:\n${ocrText}\n
+              Farm context:\nCrop: ${context.crop}\nStage: ${context.stage}\n
+              Based on this, what should the farmer do?
+            `
+          }
+
         ],
       }),
     });

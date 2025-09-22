@@ -22,9 +22,13 @@ export default function Index() {
 
   if (loading) return null; // or a splash
 
-  return user ? (
-    <Redirect href="/(tabs)/dashboard" />
-  ) : (
-    <Redirect href="/(auth)/login" />
-  );
+  // return user ? (
+  //   <Redirect href="/(tabs)/dashboard" />
+  // ) : (
+  //   <Redirect href="/(auth)/login" />
+  // );
+
+   return (
+      <Redirect href="/(tabs)/dashboard" />
+   )
 }

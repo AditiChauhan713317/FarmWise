@@ -4,12 +4,24 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View, 
+  Button,
+  TouchableOpacity
 } from "react-native";
 import { AppButton } from "./AppButton";
 import { AppText } from "./AppText";
+import { cropRecExplanation } from "@/app/api/cropRecLLM";
+import { useAuth } from "@/app/context/Authcontext";
+import parseLLMResponse from "@/app/utils/parseLLMresponse";
+import * as Speech from 'expo-speech';
+import { Ionicons } from "@expo/vector-icons";
+
 
 export default function CropRecForm() {
+  
+
+  const { supportedLang } = useAuth();
+
   const [nitrogen, setNitrogen] = useState<string>("");
   const [phosphorus, setPhosphorus] = useState<string>("");
   const [potassium, setPotassium] = useState<string>("");
@@ -24,6 +36,9 @@ export default function CropRecForm() {
   const [loading, setLoading] = useState(false);
 
   const [recommendation, setRecommendation] = useState<string>("");
+  const [explanation, setExplanation] = useState<string>("");
+  const [crop, setCrop] = useState<string>("");
+  const [reason, setReason] = useState<string>("");
   
   const validate = () => {
     let newErrors: { [key: string]: string } = {};
@@ -83,6 +98,16 @@ export default function CropRecForm() {
 
     if (rec) {
       setRecommendation(rec);
+      const llmResponse = await cropRecExplanation(rec, nitrogen, phosphorus, potassium, temperature, rainfall, humidity, ph, supportedLang);
+      setExplanation(llmResponse);
+      console.log("llm response: ", llmResponse);
+
+      // parse json
+      const cleaned = parseLLMResponse(llmResponse)
+      setCrop(cleaned.crop)
+      setReason(cleaned.reason)
+
+
     } else {
       setCropRecError("No recommendation received from server");
     }
@@ -93,6 +118,34 @@ export default function CropRecForm() {
     setLoading(false);
   }
 };
+
+// speech
+const speakCropRecommendation = () => {
+
+  let advisoryText = "";
+
+  if (supportedLang === "hi") {
+    advisoryText = `
+      अनुशंसित फसल: ${crop}.
+      कारण: ${reason}.
+    `;
+  } else {
+    advisoryText = `
+      Recommended Crop: ${crop}.
+      Reason: ${reason}.
+    `};
+
+  Speech.speak(advisoryText, {
+    language: supportedLang, // 'hi' for Hindi, 'en' for English
+    pitch: 1.0,
+    rate: 1.0,
+  });
+};
+
+
+const stopSpeech = () => {
+    Speech.stop();
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -216,9 +269,27 @@ export default function CropRecForm() {
         </AppText>
       )}
 
+      {explanation ? (
+       <View>
+        <AppText>{crop}</AppText>
+        <AppText>{reason}</AppText>
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity style={styles.speechIconButton} onPress={speakCropRecommendation}>
+                <Ionicons name="volume-high" size={28} color="#2563EB" />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.speechIconButton} onPress={stopSpeech}>
+                <Ionicons name="stop-circle" size={28} color="#DC2626" />
+              </TouchableOpacity>
+          </View>
+       </View>
+      ) : null}
+
     </ScrollView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -261,4 +332,8 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: "#DC2626",
   },
+  speechIconButton: {
+    marginHorizontal: 12,
+  },
 });
+

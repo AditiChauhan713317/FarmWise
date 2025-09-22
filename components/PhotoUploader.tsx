@@ -2,12 +2,24 @@ import { useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { analyzePest, PestAnalysisResponse } from "../app/api/pestDetection";
+import { pestExplanation } from "@/app/api/pestDetectionLLM";
+import { useAuth } from '../app/context/Authcontext'
+import parseLLMResponse from "@/app/utils/parseLLMresponse";
+  import * as Speech from 'expo-speech';
 
 export default function PhotoUploader() {
   const [permission, requestPermission] = useCameraPermissions();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [result, setResult] = useState<PestAnalysisResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [explanation, setExplanation] = useState<string>("");
+  const [pest, setPest] = useState<string>("")
+  const [harm, setHarm] = useState<string>("")
+  const [action, setAction] = useState<string>("")
+
+    const { supportedLang } = useAuth();
 
   if (!permission) {
     return <View />; 
@@ -31,6 +43,7 @@ export default function PhotoUploader() {
     if (!pickerResult.canceled) {
       const uri = pickerResult.assets[0].uri;
       setImageUri(uri);
+      console.log("uri:: ", uri)
 
       try {
         const data = await analyzePest({
@@ -40,10 +53,66 @@ export default function PhotoUploader() {
         });
         setResult(data);
         console.log("API response:", data);
+
+        if(data) {
+              const llmResponse = await pestExplanation(data.prediction, supportedLang);
+              setExplanation(llmResponse);
+              console.log("llm response: ", llmResponse);
+              // Parse JSON string into a JavaScript object
+              const pestAdvice = parseLLMResponse(llmResponse);
+
+              // Access fields
+              console.log("Pest:", pestAdvice.pest);
+              console.log("Harm:", pestAdvice.harm);
+              console.log("Action:", pestAdvice.action);
+              setPest(pestAdvice.pest)
+              setHarm(pestAdvice.harm)
+              setAction(pestAdvice.action)
+        }
+        else {
+          setError("Error in getting response from pest detection service")
+        }
+
       } catch (error) {
         console.error("Error fetching pest analysis:", error);
       }
     }
+  };
+
+
+
+// speech
+const speakPestAnalysis = () => {
+
+
+  // Combine all fields into a single string
+ let advisoryText = "";
+
+if (supportedLang === "hi") {
+  advisoryText = `
+    पाए गए कीट: ${pest}.
+    होने वाला नुकसान: ${harm}.
+    सुझाया गया उपाय: ${action}.
+  `;
+} else {
+  advisoryText = `
+    Pest detected: ${pest}.
+    Harm caused: ${harm}.
+    Recommended action: ${action}.
+  `;
+}
+
+
+  // Speak the combined advisory
+  Speech.speak(advisoryText, {
+    language: supportedLang, // e.g., 'hi' for Hindi, 'en' for English
+    pitch: 1.0,
+    rate: 1.0,
+  });
+};
+
+const stopSpeech = () => {
+    Speech.stop();
   };
 
   return (
@@ -59,13 +128,44 @@ export default function PhotoUploader() {
       {imageUri && (
         <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
       )}
+      {/* Error */}
+            {error && (
+              <View style={[styles.card, { backgroundColor: "#ffecec", borderColor: "#ff4d4d" }]}>
+                <Text style={{ color: "#b30000", fontFamily: "Afacad SpaceMono" }}>{error}</Text>
+              </View>
+            )}
+
 
       {result && (
+        <>
         <View style={styles.resultBox}>
           <Text style={styles.resultLabel}>Prediction</Text>
           <Text style={styles.resultValue}>{result.prediction}</Text>
-
         </View>
+
+        {explanation ? (
+          <View style={styles.resultBox}>
+          {/* <Text style={styles.explanation}>{explanation}</Text> */}
+            <Text style={styles.explanation}>{pest}</Text>
+          <View style={styles.resultBox}>
+            <Text style={styles.explanation}>{harm}</Text>
+          </View>
+          <View style={styles.resultBox}>
+            <Text style={styles.explanation}>{action}</Text>
+          </View>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity style={styles.speechIconButton} onPress={speakPestAnalysis}>
+                <Ionicons name="volume-high" size={28} color="#2563EB" />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.speechIconButton} onPress={stopSpeech}>
+                <Ionicons name="stop-circle" size={28} color="#DC2626" />
+              </TouchableOpacity>
+          </View>
+        </View>
+        ) : null}
+        
+        </>
       )}
     </View>
   );
@@ -142,5 +242,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     color: "#0a0a0a",
+  },
+  explanation: {
+    fontSize: 16,
+    color: "#0a0a0a",
+  },
+  speechIconButton: {
+    marginHorizontal: 12,
   },
 });

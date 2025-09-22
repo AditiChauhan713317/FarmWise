@@ -65,6 +65,8 @@ export const sendToOCR = async (base64: string): Promise<string | null> => {
   try {
     const ocrApiKey = Constants.expoConfig?.extra?.ocrApiKey;
 
+    console.log("ocr apiKey: ", ocrApiKey)
+
     const formData = new FormData();
     formData.append("base64Image", `data:image/png;base64,${base64}`);
     formData.append("language", "eng");
